@@ -1,0 +1,4 @@
+wearthe_wearthe:
+    resource: "@WeartheWeartheBundle/Resources/config/routing.yml"
+    prefix:   /
+

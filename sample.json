@@ -1,0 +1,48 @@
+{
+	"tops": [ "Shit", "Jumper"],
+	"bottoms": "Jeans",
+	"accessories": ["umbrella", "suncream"],
+	"weather": {
+		"High": 25,
+		"Low": 15,
+		"Overall": "Cloudy"
+	},
+	"times-temp": {
+		"6": "21.5",
+		"7": "21.0",
+		"8": "22.0",
+		"9": "27.0",
+		"10": "25.0",
+		"11": "24.0",
+		"12": "23.0",
+		"13": "22.0",
+		"14": "21.0",
+		"15": "20.0",
+		"16": "19.0",
+		"17": "18.0",
+		"18": "17.0",
+		"19": "18.0",
+		"20": "20.0",
+		"21": "22.0",
+		"22": "24.0"
+	},
+	"times-overall": {
+		"6": "Sunny",
+		"7": "Sunny",
+		"8": "Sunny",
+		"9": "Sunny",
+		"10": "Cloudy",
+		"11": "Cloudy",
+		"12": "Cloudy",
+		"13": "Cloudy",
+		"14": "Cloudy",
+		"15": "partly-cloudy",
+		"16": "partly-cloudy",
+		"17": "partly-cloudy",
+		"18": "partly-cloudy",
+		"19": "rain",
+		"20": "storms",
+		"21": "lightning",
+		"22": "storms"
+	}
+}

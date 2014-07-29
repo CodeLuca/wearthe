@@ -1,0 +1,14 @@
+wearthe_wearthe_api_test_page:
+    path:     /
+    defaults:
+        _controller: WeartheWeartheBundle:Default:index
+        formality: "informal"
+        gender: "male"
+        location: "37.8267,-122.423"
+        locationType: 1
+
+wearthe_wearthe_internal_api:
+    path:     /api/{locationType}/{location}/{gender}/{formality}/
+    defaults: { _controller: WeartheWeartheBundle:Default:index }
+    requirements:
+        locationType:   1|2

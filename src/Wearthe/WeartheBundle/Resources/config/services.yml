@@ -1,0 +1,7 @@
+parameters:
+#    wearthe_wearthe.example.class: Wearthe\WeartheBundle\Example
+
+services:
+#    wearthe_wearthe.example:
+#        class: %wearthe_wearthe.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
