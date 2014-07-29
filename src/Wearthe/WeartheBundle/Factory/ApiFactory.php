@@ -80,8 +80,7 @@ class ApiFactory
 			$this->weatherData[$normal] = @json_decode($weatherFile, true);
 		}
 
-		//TODO: Set up call for each hour we want to know
-		return $this->weatherData;
+		return;
 	}
 
 	/**
@@ -115,9 +114,13 @@ class ApiFactory
 
 			$this->weatherData['parsed']['time'][$normal] = $this->weatherData['parsed']['time'][$normal] * (9/5) + 32;
 
-			// Add weather conditions to conditions array
+			// TODO: Add weather conditions to conditions array ($this->weatherData['parsed']['conditions']) & parsed element
 		}
+		// TODO: Add overall weather conditions to conditions array
+	}
 
-
+	public function getWeatherData()
+	{
+		return $this->weatherData;
 	}
 }

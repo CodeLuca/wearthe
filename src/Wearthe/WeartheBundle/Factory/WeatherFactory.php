@@ -2,7 +2,7 @@
 
 namespace Wearthe\WeartheBundle\Factory;
 
-class ClothesFactory
+class WeatherFactory
 {
 	public $weatherData;
 	public $clothes;
