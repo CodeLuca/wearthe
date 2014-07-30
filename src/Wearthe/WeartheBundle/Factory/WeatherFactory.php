@@ -7,7 +7,7 @@ class WeatherFactory
 	public $weatherData;
 	public $clothes;
 
-	public function setWeatherData($weatherData)
+	public function setWeatherData(&$weatherData)
 	{
 		$this->weatherData = $weatherData;
 	}
@@ -43,53 +43,40 @@ class WeatherFactory
 		{
 			if ($temp > 20)
 			{
-				if ($sunny && !$rainny)
-				{
-					$tops[] = "T-Shirt";
-					$bottoms[] = "Shorts";
-				}
-				elseif ($sunny && $rainny)
-				{
-					$tops[] = "T-Shirt";
-					$tops[] = "Coat";
-					$bottoms[] = "Shorts";
-				}
+				$tops[] = "T-Shirt";
+				$bottoms[] = "Shorts";
 			}
 			elseif ($temp <= 20 && $temp > 15)
 			{
-				if ($sunny && $rainny)
+				if ($rainny)
 				{
-					$tops[] = "T-Shirt";
 					$tops[] = "Shirt";
-					$bottoms[] = "Jeans";
 				}
-				elseif ($sunny && !$rainny)
+				else
 				{
 					$tops[] = "T-Shirt";
-					$bottoms[] = "Jeans";
 				}
+
+				$bottoms[] = "Jeans";
 			}
 			elseif ($temp <= 15 && $temp > 6)
 			{
-				if ($sunny || !$rainny)
-				{
-					$tops[] = "Shirt";
-					$bottoms[] = "Jeans";
-				}
+				$tops[] = "Shirt";
+				$bottoms[] = "Jeans";
 			}
 			elseif ($temp <= 6)
 			{
 				if ($rainny || $thundery)
 				{
-					$tops[] = "Jumper";
 					$bottoms[] = "Trousers";
 				}
 				elseif ($cloudy)
 				{
-					$tops[] = "Shirt";
-					$tops[] = "Jumper";
 					$bottoms[] = "Jeans";
 				}
+
+				$tops[] = "Shirt";
+				$tops[] = "Jumper";
 			}
 		}
 		// Formal Males
@@ -97,54 +84,26 @@ class WeatherFactory
 		{
 			if ($temp > 20)
 			{
-				if ($sunny && !$rainny)
-				{
-					$tops[] = "Shirt";
-					$bottoms[] = "Trousers";
-				}
-				elseif($sunny && $rainny)
-				{
-					$tops[] = "Shirt";
-					$bottoms[] = "Trousers";
-				}
+				$tops[] = "Shirt";
+				$bottoms[] = "Trousers";
 			}
 			elseif ($temp <= 20 && $temp > 15)
 			{
-				if ($sunny && $rainny)
-				{
-					$tops[] = "Shirt";
-					$bottoms[] = "Trousers";
-				}
-				elseif ($sunny && !$rainny)
-				{
-					$tops[] = "Shirt";
-					$bottoms[] = "Trousers";
-				}
+				$tops[] = "Shirt";
+				$tops[] = "Jacket";
+				$bottoms[] = "Trousers";
 			}
-			elseif ($temp <= 15 && $temp > 6 && ($sunny || !$rainny))
+			elseif ($temp <= 15 && $temp > 6)
 			{
-				if ($sunny || !$rainny)
-				{
-					$tops[] = "Jacket";
-					$tops[] = "Shirt";
-					$bottoms[] = "Trousers";
-				}
+				$tops[] = "Jacket";
+				$tops[] = "Shirt";
+				$bottoms[] = "Trousers";
 			}
 			elseif ($temp <= 6)
 			{
-				if ($rainny || $thundery)
-				{
-					$tops[] = "Jacket";
-					$tops[] = "Shirt";
-					$bottoms[] = "Trousers";
-					$accessories[] = "Trilby";
-				}
-				elseif ($cloudy)
-				{
-					$tops[] = "Jacket";
-					$tops[] = "Shirt";
-					$bottoms[] = "Trousers";
-				}
+				$tops[] = "Jacket";
+				$tops[] = "Shirt";
+				$bottoms[] = "Trousers";
 			}
 		}
 		// Informal Females
@@ -160,7 +119,6 @@ class WeatherFactory
 				elseif ($sunny && $rainny)
 				{
 					$tops[] = "Shirt";
-					$tops[] = "Coat";
 					$bottoms[] = "Skirt";
 				}
 			}
@@ -214,7 +172,6 @@ class WeatherFactory
 				elseif ($sunny && $rainny)
 				{
 					$tops[] = "Tank Top / T-Shirt";
-					$tops[] = "Coat";
 					$bottoms[] = "Shorts";
 				}
 			}
@@ -269,11 +226,11 @@ class WeatherFactory
 
 			if ($formality == 'Formal')
 			{
-				$tops[] = 'Work Coat';
+				$tops[] = 'Workcoat';
 			}
 			else
 			{
-				$tops[] = 'Coat';
+				$tops[] = 'Raincoat';
 			}
 		}
 		elseif ($sunny)
@@ -292,7 +249,12 @@ class WeatherFactory
 			$accessories == 'Waterproof Sun Screen Lotion';
 		}
 
-		$this->clothes = array($tops, $bottoms, $accessories);
+		$this->clothes = array(
+			'tops' => $tops,
+			'bottoms' => $bottoms,
+			'accessories' => $accessories
+		);
+
 		return $this->clothes;
 	}
 }

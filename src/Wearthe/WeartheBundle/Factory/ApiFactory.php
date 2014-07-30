@@ -24,7 +24,7 @@ class ApiFactory
 	/**
 	 * Set a location with co-ordinates
 	 *
-	 * @param string $location Location in co-ordinated formed of LONGITUDE,LATITUDE
+	 * @param string $location Location in co-ordinated formed of LATITUDE,LONGITUDE
 	 * @return array $locationArray Array of longitude, latitude
 	 * @access public
 	 */
@@ -32,8 +32,8 @@ class ApiFactory
 	{
 		$locationArray = explode(',', $location);
 
-		$this->longitude = $locationArray[0];
-		$this->latitude = $locationArray[1];
+		$this->latitude = $locationArray[0];
+		$this->longitude = $locationArray[1];
 
 		return $locationArray;
 	}
@@ -69,18 +69,20 @@ class ApiFactory
 		$apiSite = 'https://api.forecast.io/forecast/';
 
 		// Get announcements file
-		$weatherFile = @file_get_contents($apiSite . $this->apiKey . '/' . $this->latitude . ',' . $this->longitude);
+		$url = $apiSite . $this->apiKey . '/' . $this->latitude . ',' . $this->longitude;
+		$weatherFile = @file_get_contents($url);
 		$this->weatherData['day'] = @json_decode($weatherFile, true);
 
 		$this->getHours();
 
 		foreach ($this->hours as $normal => $unixTimestamp)
 		{
-			$weatherFile = @file_get_contents($apiSite . $this->apiKey . '/' . $this->latitude . ',' . $this->longitude . ',' . $unixTimestamp);
-			$this->weatherData[$normal] = @json_decode($weatherFile, true);
+			$url = $apiSite . $this->apiKey . '/' . $this->latitude . ',' . $this->longitude . ',' . $unixTimestamp;
+			$weatherFile = @file_get_contents($url);
+			$this->weatherData['time'][$normal] = @json_decode($weatherFile, true);
 		}
 
-		return;
+		return $this->weatherData;
 	}
 
 	/**
@@ -91,7 +93,7 @@ class ApiFactory
 	{
 		$this->hours = array();
 
-		for ($i=6; $i<=21; $i++)
+		for ($i = 6; $i <= 22; $i++)
 		{
 			$this->hours[$i] = strtotime($i . ':00');
 		}
@@ -101,26 +103,113 @@ class ApiFactory
 
 	public function parseData()
 	{
-		$this->weatherData['parsed']['highTemp'] = $this->weatherData['day']['daily']['data']['apparentTemperatureMax'] ?: $this->weatherData['day']['daily']['data']['temperatureMax'];
-		$this->weatherData['parsed']['lowTemp'] = $this->weatherData['day']['daily']['data']['apparentTemperatureMin'] ?: $this->weatherData['day']['daily']['data']['temperatureMin'];
+		// Initalise variables
+		$this->weatherData['parsed'] = array();
+
+		// Get high and low for the day
+		$this->weatherData['parsed']['highTemp'] = $this->weatherData['day']['daily']['data'][1]['apparentTemperatureMax'] ?: $this->weatherData['day']['daily']['data']['temperatureMax'];
+		$this->weatherData['parsed']['lowTemp'] = $this->weatherData['day']['daily']['data'][1]['apparentTemperatureMin'] ?: $this->weatherData['day']['daily']['data']['temperatureMin'];
 
 		// Convert F to C
-		$this->weatherData['parsed']['highTemp'] = $this->weatherData['parsed']['highTemp'] * (9/5) + 32;
-		$this->weatherData['parsed']['lowTemp'] = $this->weatherData['parsed']['lowTemp'] * (9/5) + 32;
+		$this->weatherData['parsed']['highTemp'] = fToC($this->weatherData['parsed']['highTemp']);
+		$this->weatherData['parsed']['lowTemp'] = fToC($this->weatherData['parsed']['lowTemp']);
+
+		$this->weatherData['parsed']['conditions'] = array();
+		$this->weatherData['parsed']['time'] = array();
 
 		foreach ($this->hours as $normal => $unixTimestamp)
 		{
-			$this->weatherData['parsed']['time'][$normal] = $this->weatherData[$normal]['currently']['apparentTemperature'] ?: $this->weatherData[$normal]['currently']['temperature'];
+			$this->weatherData['parsed']['time'][$normal] = array();
 
-			$this->weatherData['parsed']['time'][$normal] = $this->weatherData['parsed']['time'][$normal] * (9/5) + 32;
+			// Get temperature for hour - Use apparentTemp if available.
+			$this->weatherData['parsed']['time'][$normal]['temp'] = $this->weatherData['time'][$normal]['currently']['apparentTemperature'] ?: $this->weatherData['time'][$normal]['currently']['temperature'];
 
-			// TODO: Add weather conditions to conditions array ($this->weatherData['parsed']['conditions']) & parsed element
+			// Degrees F to C
+			$this->weatherData['parsed']['time'][$normal]['temp'] = fToC($this->weatherData['parsed']['time'][$normal]['temp']);
+
+			// Icon (AKA Overall weather condition)
+			$this->weatherData['parsed']['time'][$normal]['icon'] = $this->weatherData['time'][$normal]['currently']['icon'];
+
+			// For alt text, the summary
+			$this->weatherData['parsed']['time'][$normal]['summary'] = $this->weatherData['time'][$normal]['currently']['summary'];
+
+			// Create an array of conditions during the day
+			$condition = $this->calculateCondition($this->weatherData['time'][$normal]['currently']['icon']);
+
+			if (!in_array($condition, $this->weatherData['parsed']['conditions'], true))
+			{
+				$this->weatherData['parsed']['conditions'][] = $condition;
+			}
+
+			unset($condition);
 		}
-		// TODO: Add overall weather conditions to conditions array
+
+		// Add daily icon from day
+		if (!in_array($this->calculateCondition($this->weatherData['day']['daily']['data'][1]['icon']), $this->weatherData['parsed']['conditions'], true))
+		{
+			$this->weatherData['parsed']['conditions'][] = $this->calculateCondition($this->weatherData['day']['daily']['data'][1]['icon']);
+		}
+
+		// Add currently icon from day
+		if (!in_array($this->calculateCondition($this->weatherData['day']['currently']['icon']), $this->weatherData['parsed']['conditions'], true))
+		{
+			$this->weatherData['parsed']['conditions'][] = $this->calculateCondition($this->weatherData['day']['currently']['icon']);
+		}
 	}
 
 	public function getWeatherData()
 	{
 		return $this->weatherData;
+	}
+
+	private function fToC($f)
+	{
+		return round((5/9) * ($f - 32));
+	}
+
+	private function calculateCondition($icon)
+	{
+		switch ($icon)
+		{
+			case 'fog':
+				$condition = 'fog';
+				break;
+
+			case 'rain':
+				$condition = 'rain';
+				break;
+
+			case 'snow':
+			case 'sleet':
+			case 'hail':
+				$condition = 'snow';
+				break;
+
+			case 'wind':
+				$condition = 'wind';
+				break;
+
+			case 'thunderstorm':
+				$condition = 'storm';
+				break;
+
+			case 'tornado':
+				$condition = 'tornado';
+				break;
+
+			case 'cloudy':
+			case 'partly-cloudy-day':
+			case 'partly-cloudy-night':
+				$condition = 'cloudy';
+				break;
+
+			case 'clear-day':
+			case 'clear-night':
+			default:
+				$condition = 'clear';
+				break;
+		}
+
+		return $condition;
 	}
 }
