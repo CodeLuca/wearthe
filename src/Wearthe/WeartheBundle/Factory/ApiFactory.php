@@ -198,9 +198,12 @@ class ApiFactory
 				break;
 
 			case 'cloudy':
+				$condition = 'cloudy';
+				break;
+
 			case 'partly-cloudy-day':
 			case 'partly-cloudy-night':
-				$condition = 'cloudy';
+				$condition = 'partly-cloudy';
 				break;
 
 			case 'clear-day':

@@ -14,201 +14,213 @@ class WeatherFactory
 
 	public function getClothes($gender = 'male', $formality = 'informal')
 	{
-		$weatherConditions = $weatherData['parsed']['conditions'] = array(); // Get this properly
+		$weatherConditions = $weatherData['parsed']['conditions']; // Get this properly
 
-		$highTemp = $weatherData['parsed']['highTemp'] = 25; // Get this properly
-		$lowTemp = $weatherData['parsed']['lowTemp'] = 15; // Get this properly
+		$highTemp = $weatherData['parsed']['highTemp']; // Get this properly
+		$lowTemp = $weatherData['parsed']['lowTemp']; // Get this properly
 
-		$temp = 20; // TODO: Fix this
+		$temp = ($highTemp + $lowTemp) / 2;
 
 		// Initalise variables
 		$tops = array();
-		$bottoms[] = array();
+		$bottoms = '';
 		$accessories = array();
 
 		// Define certian conditions
-		$sunny = in_array('Sun', $weatherConditions, true);
-		$rainny = in_array('Rain', $weatherConditions, true);
-		$thundery = in_array('Thunder', $weatherConditions, true);
-		$cloudy = in_array('Cloudy', $weatherConditions, true);
+		$clear = in_array('clear', $weatherConditions, true);
+		$rain = in_array('rain', $weatherConditions, true);
+		$storm = in_array('storm', $weatherConditions, true);
+		$cloudy = in_array('cloudy', $weatherConditions, true);
+		$partlyCloudy = in_array('cloudy', $weatherConditions, true);
+		$tornado = in_array('tornado', $weatherConditions, true);
+		$wind = in_array('wind', $weatherConditions, true);
+		$snow = in_array('snow', $weatherConditions, true);
+		$fog = in_array('fog', $weatherConditions, true);
 
-		// If it's rainy assume it will be cloudy
-		if ($rainny) { $cloudy = true; }
-
-		// If there is thunder assume it will rain
-		if ($thundery) { $rainny = true; }
+		if ($temp > 20)
+		{
+			$hot = true;
+		}
+		elseif ($temp <= 20 && $temp > 15)
+		{
+			$warm = true;
+		}
+		elseif ($temp <= 15 && $temp > 6)
+		{
+			$cool = true;
+		}
+		elseif ($temp <= 6)
+		{
+			$cold = true;
+		}
 
 		// Informal Males
 		if ($gender == 'male' && $formality == 'informal')
 		{
-			if ($temp > 20)
+			if ($hot)
 			{
-				$tops[] = "T-Shirt";
-				$bottoms[] = "Shorts";
-			}
-			elseif ($temp <= 20 && $temp > 15)
-			{
-				if ($rainny)
+				$tops[] = "t-shirt";
+
+				if (
+					($clear || $partlyCloudy || $cloudy) &&
+					!($rain || $storm || $tornado || $wind || $snow))
 				{
-					$tops[] = "Shirt";
+					$bottoms = "shorts";
 				}
 				else
 				{
-					$tops[] = "T-Shirt";
+					$bottoms = "trousers";
+				}
+			}
+			elseif ($warm || $cool)
+			{
+				if (
+					($clear || $partlyCloudy || $cloudy) &&
+					!($rain || $storm || $tornado || $wind || $snow))
+				{
+					$bottoms = "jeans";
+				}
+				else
+				{
+					$bottoms = "trousers";
 				}
 
-				$bottoms[] = "Jeans";
-			}
-			elseif ($temp <= 15 && $temp > 6)
-			{
-				$tops[] = "Shirt";
-				$bottoms[] = "Jeans";
-			}
-			elseif ($temp <= 6)
-			{
-				if ($rainny || $thundery)
+				if ($cool)
 				{
-					$bottoms[] = "Trousers";
-				}
-				elseif ($cloudy)
-				{
-					$bottoms[] = "Jeans";
+					$tops[] = 'jumper';
 				}
 
-				$tops[] = "Shirt";
-				$tops[] = "Jumper";
+				$tops[] = "t-shirt";
+			}
+			elseif ($cold)
+			{
+				if ($storm || $rain || $snow)
+				{
+					$bottoms = "trousers";
+				}
+				else
+				{
+					$bottoms = "jeans";
+				}
+
+				$tops[] = "t-shirt";
+				$tops[] = 'jumper';
 			}
 		}
 		// Formal Males
 		elseif ($gender == 'male' && $formality == 'formal')
 		{
-			if ($temp > 20)
+			$tops[] = "shirt";
+			$bottoms = "trousers";
+
+			if ($warm || $cool || $cold)
 			{
-				$tops[] = "Shirt";
-				$bottoms[] = "Trousers";
-			}
-			elseif ($temp <= 20 && $temp > 15)
-			{
-				$tops[] = "Shirt";
-				$tops[] = "Jacket";
-				$bottoms[] = "Trousers";
-			}
-			elseif ($temp <= 15 && $temp > 6)
-			{
-				$tops[] = "Jacket";
-				$tops[] = "Shirt";
-				$bottoms[] = "Trousers";
-			}
-			elseif ($temp <= 6)
-			{
-				$tops[] = "Jacket";
-				$tops[] = "Shirt";
-				$bottoms[] = "Trousers";
+				$tops[] = "jacket";
 			}
 		}
 		// Informal Females
 		elseif ($gender == 'female' && $formality == 'informal')
 		{
-			if ($temp > 20)
+			if ($hot)
 			{
 				if ($sunny && !$rainny)
 				{
 					$tops[] = "Sleeveless Shirt";
-					$bottoms[] = "Skirt";
+					$bottoms = "Skirt";
 				}
 				elseif ($sunny && $rainny)
 				{
 					$tops[] = "Shirt";
-					$bottoms[] = "Skirt";
+					$bottoms = "Skirt";
 				}
 			}
-			elseif ($temp <= 20 && $temp > 15)
+			elseif ($warm)
 			{
 				if ($sunny && $rainny)
 				{
 					$tops[] = "Shirt";
-					$bottoms[] = "Loose Trousers";
+					$bottoms = "Loose Trousers";
 				}
 				elseif ($sunny && !$rainny)
 				{
 					$tops[] = "Shirt";
-					$bottoms[] = "Skirt";
+					$bottoms = "Skirt";
 				}
 			}
-			elseif ($temp <= 15 && $temp > 6)
+			elseif ($cool)
 			{
+				$tops[] = "Shirt";
+
 				if ($sunny || !$rainny)
 				{
-					$tops[] = "Shirt";
-					$bottoms[] = "Jeans";
+					$bottoms = "Jeans";
 				}
 				elseif ($rainny || $thundery)
 				{
 					$tops[] = "Jacket";
-					$tops[] = "Shirt";
-					$bottoms[] = "Trousers";
+					$bottoms = "Trousers";
 				}
 			}
-			elseif ($temp <= 6)
+			elseif ($cold)
 			{
 				if ($cloudy)
 				{
 					$tops[] = "Jacket";
 					$tops[] = "Shirt";
-					$bottoms[] = "Trousers";
+					$bottoms = "Trousers";
 				}
 			}
 		}
 		// Formal females
 		elseif ($gender == 'female' && $formality == 'formal')
 		{
-			if ($temp > 20)
+			if ($hot)
 			{
 				if ($sunny && !$rainny)
 				{
 					$tops[] = "Tank Top / T-Shirt";
-					$bottoms[] = "Shorts / Skirt";
+					$bottoms = "Shorts / Skirt";
 				}
 				elseif ($sunny && $rainny)
 				{
 					$tops[] = "Tank Top / T-Shirt";
-					$bottoms[] = "Shorts";
+					$bottoms = "Shorts";
 				}
 			}
-			elseif ($temp <= 20 && $temp > 15)
+			elseif ($warm)
 			{
 				if ($sunny && $rainny)
 				{
 					$tops[] = "T-Shirt";
 					$tops[] = "Cardigans";
-					$bottoms[] = "Jeans";
+					$bottoms = "Jeans";
 				}
 				elseif ($sunny && !$rainny)
 				{
 					$tops[] = "T-Shirt";
-					$bottoms[] = "Jeans";
+					$bottoms = "Jeans";
 				}
 			}
-			elseif ($temp <= 15 && $temp > 6)
+			elseif ($cool)
 			{
 				if ($sunny || !$rainny)
 				{
 					$tops[] = "Shirt";
-					$bottoms[] = "Jeans";
+					$bottoms = "Jeans";
 				}
 			}
-			elseif ($temp <= 6)
+			elseif ($cold)
 			{
 				if ($rainny || $thundery)
 				{
 					$tops[] = "T-shirt";
-					$bottoms[] = "Trousers";
+					$bottoms = "Trousers";
 				}
 				elseif ($cloudy)
 				{
 					$tops[] = "Shirt";
 					$tops[] = "Jumper";
-					$bottoms[] = "Jeans";
+					$bottoms = "Jeans";
 				}
 			}
 		}
@@ -220,9 +232,12 @@ class WeatherFactory
 		}
 
 		// Sun or rain accessories
-		if ($rainny)
+		if ($rain || $storm || $snow || $tornado)
 		{
-			$accessories[] = "Umbrella";
+			if (!$tornado)
+			{
+				$accessories[] = "Umbrella";
+			}
 
 			if ($formality == 'Formal')
 			{
@@ -233,7 +248,7 @@ class WeatherFactory
 				$tops[] = 'Raincoat';
 			}
 		}
-		elseif ($sunny)
+		elseif ($clear && ($warm || $hot || $cool))
 		{
 			$accessories[] = 'Sun Screen Lotion';
 
@@ -244,7 +259,7 @@ class WeatherFactory
 		}
 
 		// Should suncream be waterproof
-		if ($sunny && ($rainny || $thundery))
+		if (($rain || $storm || $snow) && ($clear && ($warm || $hot || $cool)))
 		{
 			$accessories == 'Waterproof Sun Screen Lotion';
 		}
