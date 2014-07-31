@@ -111,8 +111,8 @@ class ApiFactory
 		$this->weatherData['parsed']['lowTemp'] = $this->weatherData['day']['daily']['data'][1]['apparentTemperatureMin'] ?: $this->weatherData['day']['daily']['data']['temperatureMin'];
 
 		// Convert F to C
-		$this->weatherData['parsed']['highTemp'] = fToC($this->weatherData['parsed']['highTemp']);
-		$this->weatherData['parsed']['lowTemp'] = fToC($this->weatherData['parsed']['lowTemp']);
+		$this->weatherData['parsed']['highTemp'] = $this->fToC($this->weatherData['parsed']['highTemp']);
+		$this->weatherData['parsed']['lowTemp'] = $this->fToC($this->weatherData['parsed']['lowTemp']);
 
 		$this->weatherData['parsed']['conditions'] = array();
 		$this->weatherData['parsed']['time'] = array();
@@ -125,7 +125,7 @@ class ApiFactory
 			$this->weatherData['parsed']['time'][$normal]['temp'] = $this->weatherData['time'][$normal]['currently']['apparentTemperature'] ?: $this->weatherData['time'][$normal]['currently']['temperature'];
 
 			// Degrees F to C
-			$this->weatherData['parsed']['time'][$normal]['temp'] = fToC($this->weatherData['parsed']['time'][$normal]['temp']);
+			$this->weatherData['parsed']['time'][$normal]['temp'] = $this->fToC($this->weatherData['parsed']['time'][$normal]['temp']);
 
 			// Icon (AKA Overall weather condition)
 			$this->weatherData['parsed']['time'][$normal]['icon'] = $this->weatherData['time'][$normal]['currently']['icon'];

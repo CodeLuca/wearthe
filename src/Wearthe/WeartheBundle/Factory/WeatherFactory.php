@@ -14,10 +14,10 @@ class WeatherFactory
 
 	public function getClothes($gender = 'male', $formality = 'informal')
 	{
-		$weatherConditions = $weatherData['parsed']['conditions']; // Get this properly
+		$weatherConditions = $this->weatherData['parsed']['conditions']; // Get this properly
 
-		$highTemp = $weatherData['parsed']['highTemp']; // Get this properly
-		$lowTemp = $weatherData['parsed']['lowTemp']; // Get this properly
+		$highTemp = $this->weatherData['parsed']['highTemp']; // Get this properly
+		$lowTemp = $this->weatherData['parsed']['lowTemp']; // Get this properly
 
 		$temp = ($highTemp + $lowTemp) / 2;
 
@@ -36,6 +36,8 @@ class WeatherFactory
 		$wind = in_array('wind', $weatherConditions, true);
 		$snow = in_array('snow', $weatherConditions, true);
 		$fog = in_array('fog', $weatherConditions, true);
+
+		$hot = $warm = $cool = $cold = false;
 
 		if ($temp > 20)
 		{
@@ -236,32 +238,32 @@ class WeatherFactory
 		{
 			if (!$tornado)
 			{
-				$accessories[] = "Umbrella";
+				$accessories[] = "umbrella";
 			}
 
 			if ($formality == 'Formal')
 			{
-				$tops[] = 'Workcoat';
+				$tops[] = 'workcoat';
 			}
 			else
 			{
-				$tops[] = 'Raincoat';
+				$tops[] = 'coat';
 			}
 		}
 		elseif ($clear && ($warm || $hot || $cool))
 		{
-			$accessories[] = 'Sun Screen Lotion';
+			$accessories[] = 'suncream';
 
 			if ($formality == 'Informal' && $temp >= 20)
 			{
-				$accessories[] = "Sunglasses";
+				$accessories[] = "sunglasses";
 			}
 		}
 
 		// Should suncream be waterproof
 		if (($rain || $storm || $snow) && ($clear && ($warm || $hot || $cool)))
 		{
-			$accessories == 'Waterproof Sun Screen Lotion';
+			$accessories == 'waterproof-suncream';
 		}
 
 		$this->clothes = array(
