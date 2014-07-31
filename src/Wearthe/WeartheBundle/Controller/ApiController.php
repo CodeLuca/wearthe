@@ -51,6 +51,6 @@ class ApiController extends Controller
 		// $dump = json_encode($weatherData['parsed']);
 		// $dump = json_encode($clothes);
 
-		return $this->render('WeartheWeartheBundle:Api:index.json.twig', array('data' => json_encode($final)));
+		return $this->render('WeartheWeartheBundle:Api:index.json.twig', array('data' => $final));
 	}
 }
