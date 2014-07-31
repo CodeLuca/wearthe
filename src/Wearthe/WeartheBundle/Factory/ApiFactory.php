@@ -45,19 +45,18 @@ class ApiFactory
 	 *
 	 * @param string $location The location in the form of address
 	 * @return array The longitude & latitude
-	 * @static
 	 * @access public
 	*/
-	public static function setGeneralisedLocation($location)
+	public function setGeneralisedLocation($location)
 	{
 		$address = $location;
 		$prepAddr = str_replace(' ','+',$address);
 		$geocode = @file_get_contents('http://maps.google.com/maps/api/geocode/json?address='.$prepAddr.'&sensor=false');
 		$output = @json_decode($geocode);
-		$this->latitude = $output->results[0]->geometry->location->lat;
-		$this->longitude = $output->results[0]->geometry->location->lng;
+		$this->latitude = ($output->results[0]->geometry->location->lat);
+		$this->longitude = ($output->results[0]->geometry->location->lng);
 
-		return array($longitude, $latitude);
+		return array($this->longitude, $this->latitude);
 	}
 
 	/**
